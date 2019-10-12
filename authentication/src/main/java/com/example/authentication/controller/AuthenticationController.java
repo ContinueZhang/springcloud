@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+/**
+ * 张天赐
+ */
 @RestController
 @RequestMapping("/authentication")
 @Slf4j
