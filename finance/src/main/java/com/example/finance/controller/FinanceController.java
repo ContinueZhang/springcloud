@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.Assert;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -37,7 +37,8 @@ public class FinanceController {
 //        body = method2();
 //        body = method3();
 //        body = method4();
-        body = method5();
+//        body = method5();
+        body = method6();
         return body;
     }
 
@@ -64,7 +65,7 @@ public class FinanceController {
 
     private Object method4() {
         Foo foo = new Foo();
-        foo.setName("tianci");
+        foo.setName("method4");
         HttpEntity<Foo> request = new HttpEntity<>(foo);
         foo = restTemplate.postForObject(fooResourceUrl, request, Foo.class);
         Assert.notNull(foo, "返回结果为null");
@@ -74,8 +75,29 @@ public class FinanceController {
 
     private Object method5() {
         Foo foo = new Foo();
-        foo.setName("lele");
+        foo.setName("method5");
         HttpEntity<Foo> request = new HttpEntity<>(foo);
         return restTemplate.postForLocation(fooResourceUrl, request);
     }
+
+    private Object method6() {
+        Foo foo = new Foo();
+        foo.setName("method6");
+        HttpEntity<Foo> request = new HttpEntity<>(foo);
+        ResponseEntity<Foo> response = restTemplate.exchange(fooResourceUrl, HttpMethod.POST, request, Foo.class);
+        log.info("statusCod{}===>", response.getStatusCode());
+        return response.getBody();
+    }
+
+    private Object method7() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("id", "1");
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(fooResourceUrl, request, String.class);
+        log.info("statusCod{}===>", response.getStatusCode());
+        return response.getBody();
+    }
+
 }
